@@ -75,12 +75,12 @@ sys.stdout = orig_stdout
 filestat.close()
 
 # iterating through with imarith to combine flats darks
-for num2 in range(2)
+for num2 in range(2):
     for num1 in range(len(time)):
         tfile = fnmatch.filter(f, filetypes[num2] + "*" + time[num1] + "*")
         tfilename = mypath + filetypes[num2] + "_" + time[num1] + "_combine.fits"
         open(tfilename, 'w').close()
-        for num in range(len(tfile))
+        for num in range(len(tfile)):
             tmpfile = iraf.imarith(tfilename + " + " + tfile[num] + " " + tfilename)
 
 # open file for imstat logging
