@@ -68,7 +68,7 @@ for i in range(len(f)):
 
 # open file for imstat logging
 orig_stdout = sys.stdout
-filestat = file(mypath + 'totalimstat.txt', 'w')
+filestat = file(mypath  + 'totalimstat.txt', 'w')
 sys.stdout = filestat
 iraf.imstat(mypath + "*.fits")
 sys.stdout = orig_stdout
