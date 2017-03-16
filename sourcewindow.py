@@ -29,7 +29,7 @@ with open("example_all_sources.txt", "w") as f:
 # configuring date
 locations = ["norman","apo","iram30","subaru"]
 instring = "all_sources.txt"
-print("If you rather read from file then make file: " + instring)
+print("If you rather read from file then make file: " + instring + " example in: example_" + instring)
 if os.path.exists(instring):
 	with open(instring, "r") as f:
 		raw = f.read().splitlines()
@@ -90,7 +90,6 @@ for numsource in range(len(source)):
 		for i in range(96): #15 minute intervals
 			frame_obs = AltAz(obstime=midnight+(i*0.25)*u.hour,location=answer)
 			targaltaz = targcoord.transform_to(frame_obs)
-			
 			if targaltaz.alt > 20*u.degree:
 				alttwenty.append(i*0.25)
 				

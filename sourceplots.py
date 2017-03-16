@@ -27,7 +27,7 @@ with open("example_all_sources.txt", "w") as f:
 # configuring date
 locations = ["norman","apo","iram30","subaru"]
 instring = "all_sources.txt"
-print("If you rather read from file then make file: " + instring)
+print("If you rather read from file then make file: " + instring + " example in: example_" + instring)
 if os.path.exists(instring):
 	with open(instring, "r") as f:
 		raw = f.read().splitlines()
@@ -79,7 +79,6 @@ for numsource in range(len(source)):
 	os.system("rm -f " + outname + "*")
 	targcoord = SkyCoord.from_name(source[numsource])
 	targaltaz = targcoord.transform_to(frame_obs)
-
 	# plotting
 	plt.figure(numsource + 1) #allows code to generate and display multiple different plots
 	plt.plot(delta_midnight, sunaltaz.alt, color='r', label='Sun')
