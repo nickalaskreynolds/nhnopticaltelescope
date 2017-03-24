@@ -8,15 +8,17 @@ Date: March 2017
 # import modules
 import astropy.units as u
 from astropy.time import Time
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz, FK5, get_sun, get_moon, Galactic
+from astropy.coordinates import SkyCoord, EarthLocation, AltAz, FK5, get_sun, Galactic
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import draw as Draw
 from astropy.visualization import astropy_mpl_style
-#from astropy.utils import iers     # improving precision if needed
-#iers.IERS.iers_table = iers.IERS_A.open(iers.IERS_A_URL)
+from astropy.utils import iers     # improving precision if needed
+
 #plt.style.use(astropy_mpl_style)
 
+'''
 # make example file
 with open("example_all_sources.txt", "w") as f:
 	f.write("2017-4-1\n")
@@ -69,41 +71,47 @@ elif answer == "alma":
 	utcoffset = -4*u.hour + utcoffset
 	answer = EarthLocation(lat='-23d01m09s', lon='-67d45m12s', height=5050*u.m)
 midnight = Time(Date+' 00:00:00') - utcoffset
-delta_midnight = np.linspace(-12, 12, 300)*u.hour
-times = midnight + delta_midnight
+'''
 
-# frame transformation
-frame_obs = AltAz(obstime=times,location=answer)
-sunaltaz = get_sun(times).transform_to(frame_obs)
-moonaltaz = get_moon(times).transform_to(frame_obs)
+def plots(Date,name,source,answer,midnight,moon,IERSTABLE):
 
-# iterating through sources
-for numsource in range(len(source)):
-	n=""
-	print("Starting " + source[numsource] + " ...")
-	outname = n.join(source[numsource].split(" ")) + "_time_plot.pdf"
-	os.system("rm -f " + outname + "*")
-	targcoord = SkyCoord.from_name(source[numsource])
-	targaltaz = targcoord.transform_to(frame_obs)
-	# plotting
-	plt.figure(numsource + 1) #allows code to generate and display multiple different plots
-	plt.plot(delta_midnight, sunaltaz.alt, color='r', label='Sun')
-	plt.plot(delta_midnight, moonaltaz.alt, color='y', label='Moon')
-	plt.scatter(delta_midnight, targaltaz.alt, c=targaltaz.az, label=source[numsource], lw=0, s=8, cmap='jet')
-	plt.fill_between(delta_midnight.to('hr').value, 0, 90, sunaltaz.alt < -0*u.deg, color='0.5', zorder=0)
-	plt.fill_between(delta_midnight.to('hr').value, 0, 90, sunaltaz.alt < -18*u.deg, color='k', zorder=0)
-	plt.colorbar().set_label('Azimuth [deg]')
-	plt.legend(loc='upper left')
-	plt.xlim(-12,12)
-	plt.xticks(np.arange(13)*2 - 12)
-	plt.ylim(0, 90)
-	plt.title(source[numsource] + " at " + name + " on " + Date)
-	plt.xlabel('Hours from Local Midnight')
-	plt.ylabel('Altitude [deg]')
-	plt.savefig(outname)
-plt.show()
+	iers.IERS.iers_table = IERSTABLE
+	delta_midnight = np.linspace(-12, 12, 300)*u.hour
+	times = midnight + delta_midnight
 
-print("Finished all")
+	# frame transformation
+	frame_obs = AltAz(obstime=times,location=answer)
+	sunaltaz = get_sun(times).transform_to(frame_obs)
+	if moon == "y":
+		from astropy.coordinates import get_moon
+		moonaltaz = get_moon(times).transform_to(frame_obs)
 
+	# iterating through sources
+	for numsource in range(len(source)):
+		n=""
+		print("Starting " + source[numsource] + " ...")
+		outname = n.join(source[numsource].split(" ")) + "_time_" + str(Date) + "_plot.pdf"
+		os.system("rm -f " + outname + "*")
+		targcoord = SkyCoord.from_name(source[numsource])
+		targaltaz = targcoord.transform_to(frame_obs)
+		# plotting
+		plt.figure(numsource + 1) #allows code to generate and display multiple different plots
+		plt.plot(delta_midnight, sunaltaz.alt, color='r', label='Sun')
+		if moon == "y":
+			plt.plot(delta_midnight, moonaltaz.alt, color='y', label='Moon')
+		plt.scatter(delta_midnight, targaltaz.alt, c=targaltaz.az, label=source[numsource], lw=0, s=8, cmap='jet')
+		plt.fill_between(delta_midnight.to('hr').value, 0, 90, sunaltaz.alt < -0*u.deg, color='0.5', zorder=0)
+		plt.fill_between(delta_midnight.to('hr').value, 0, 90, sunaltaz.alt < -18*u.deg, color='k', zorder=0)
+		plt.colorbar().set_label('Azimuth [deg]')
+		plt.legend(loc='upper left')
+		plt.xlim(-12,12)
+		plt.xticks(np.arange(13)*2 - 12)
+		plt.ylim(0, 90)
+		plt.title(source[numsource] + " at " + name + " on " + Date)
+		plt.xlabel('Hours from Local Midnight')
+		plt.ylabel('Altitude [deg]')
+		plt.savefig(outname)
+		Draw()
+	plt.show()
 #############
 # end of code
