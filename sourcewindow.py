@@ -27,7 +27,7 @@ with open("example_all_sources.txt", "w") as f:
 	f.close()
 
 # configuring date
-locations = ["norman","apo","iram30","subaru"]
+locations = ["norman","apo","iram30","subaru","alma"]
 instring = "all_sources.txt"
 print("If you rather read from file then make file: " + instring + " example in: example_" + instring)
 if os.path.exists(instring):
@@ -49,6 +49,7 @@ else:
 				break
 		except ValueError:
 			continue
+
 utcoffset = 0
 source=source.split(",")
 if dst == "y":
@@ -67,6 +68,8 @@ elif answer == "subaru":
 	answer = EarthLocation(lat='19d49m32s', lon='-155d28m36s', height=4139*u.m)
 midnight = Time(Date+' 00:00:00') - utcoffset
 delta_midnight = np.linspace(-12, 12, 300)*u.hour
+
+def window(Date,source,answer,dst)
 
 # preparing file
 for numsource in range(len(source)):

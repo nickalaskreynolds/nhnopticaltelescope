@@ -26,7 +26,7 @@ with open("example_all_sources.txt", "w") as f:
 	f.close()
 
 # configuring date
-locations = ["norman","apo","iram30","subaru"]
+locations = ["norman","apo","iram30","subaru","alma"]
 instring = "all_sources.txt"
 print("If you rather read from file then make file: " + instring + " example in: example_" + instring)
 if os.path.exists(instring):
@@ -49,6 +49,7 @@ else:
 		except ValueError:
 			continue
 utcoffset = 0
+name = answer
 source=source.split(",")
 if dst == "y":
 	utcoffset = 1*u.hour
@@ -64,6 +65,9 @@ elif answer == "iram30":
 elif answer == "subaru":
 	utcoffset = -10*u.hour + utcoffset
 	answer = EarthLocation(lat='19d49m32s', lon='-155d28m36s', height=4139*u.m)
+elif answer == "alma":
+	utcoffset = -4*u.hour + utcoffset
+	answer = EarthLocation(lat='-23d01m09s', lon='-67d45m12s', height=5050*u.m)
 midnight = Time(Date+' 00:00:00') - utcoffset
 delta_midnight = np.linspace(-12, 12, 300)*u.hour
 times = midnight + delta_midnight
@@ -93,6 +97,7 @@ for numsource in range(len(source)):
 	plt.xlim(-12,12)
 	plt.xticks(np.arange(13)*2 - 12)
 	plt.ylim(0, 90)
+	plt.title(source[numsource] + " at " + name + " on " + Date)
 	plt.xlabel('Hours from Local Midnight')
 	plt.ylabel('Altitude [deg]')
 	plt.savefig(outname)
