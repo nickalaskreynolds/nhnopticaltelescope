@@ -12,6 +12,7 @@ import os
 import glob
 import aplpy
 import sys
+import ds9cmap
 
 # make example
 print("Making example file.")
